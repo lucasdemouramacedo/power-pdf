@@ -1,12 +1,13 @@
 package com.power.power_pdf.entity;
 
+import com.power.power_pdf.enums.MergeRequestStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Table(name = "merge_requests")
-public class MergeRequests {
+public class MergeRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,17 +17,22 @@ public class MergeRequests {
     @Column(name = "file_name", nullable = false, length = 100)
     private String fileName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private MergeRequestStatus status = MergeRequestStatus.PENDING;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public MergeRequests() {}
+    public MergeRequest() {}
 
-    public MergeRequests(UUID id, String fileName) {
+    public MergeRequest(UUID id, String fileName, MergeRequestStatus status) {
         this.id = id;
         this.fileName = fileName;
+        this.status = status;
     }
 
     public UUID getId() {
@@ -43,6 +49,14 @@ public class MergeRequests {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public MergeRequestStatus getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(MergeRequestStatus status) {
+        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -62,5 +76,4 @@ public class MergeRequests {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
 }
