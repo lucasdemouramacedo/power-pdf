@@ -29,10 +29,8 @@ public class MergeRequest {
 
     public MergeRequest() {}
 
-    public MergeRequest(UUID id, String fileName, MergeRequestStatus status) {
-        this.id = id;
+    public MergeRequest(String fileName) {
         this.fileName = fileName;
-        this.status = status;
     }
 
     public UUID getId() {
@@ -70,6 +68,7 @@ public class MergeRequest {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
     }
 
     @PreUpdate
