@@ -17,9 +17,15 @@ public class MergeRequest {
     @Column(name = "file_name", nullable = false, length = 100)
     private String fileName;
 
+    @Column(name = "object_id", nullable = true)
+    private String objectId;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private MergeRequestStatus status = MergeRequestStatus.PENDING;
+
+    @Column(name = "merged_at")
+    private LocalDateTime mergedAt;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -49,12 +55,28 @@ public class MergeRequest {
         this.fileName = fileName;
     }
 
+    public String getObjectId() {
+        return this.objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
     public MergeRequestStatus getStatus() {
         return this.status;
     }
 
     public void setStatus(MergeRequestStatus status) {
         this.status = status;
+    }
+
+    public LocalDateTime getMergedAt() {
+        return this.mergedAt;
+    }
+
+    public void setMergedAt(LocalDateTime mergedAt) {
+        this.mergedAt = mergedAt;
     }
 
     public LocalDateTime getCreatedAt() {
