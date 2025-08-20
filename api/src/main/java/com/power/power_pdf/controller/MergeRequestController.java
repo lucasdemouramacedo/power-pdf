@@ -4,6 +4,7 @@ import com.power.power_pdf.dto.MergeRequestRequestDTO;
 import com.power.power_pdf.dto.MergeRequestResponseDTO;
 import com.power.power_pdf.entity.MergeRequest;
 import com.power.power_pdf.service.MergeRequestService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,6 @@ public class MergeRequestController {
         MergeRequest mergeRequest = mergeRequestService.makeMergeRequest(dto.toMergeRequestObject(), dto.getFiles());
         MergeRequestResponseDTO response = new MergeRequestResponseDTO().fromEntity(mergeRequest);
 
-        return ResponseEntity.status(201).body(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }
