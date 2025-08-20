@@ -31,9 +31,10 @@ public class MergeRequestFile {
 
     public MergeRequestFile() {}
 
-    public MergeRequestFile(MergeRequest mergeRequest, String fileName) {
+    public MergeRequestFile(MergeRequest mergeRequest, String fileName, String objectId) {
         this.mergeRequest = mergeRequest;
         this.fileName = fileName;
+        this.objectId = objectId;
     }
 
     public UUID getId() {
