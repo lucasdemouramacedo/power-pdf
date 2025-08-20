@@ -1,12 +1,14 @@
 package com.power.power_pdf.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.power.power_pdf.entity.MergeRequest;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public class MergeRequestRequestDTO {
 
-    @JsonProperty("fileName")
     private String fileName;
+    private List<MultipartFile> files;
 
     public MergeRequestRequestDTO() {}
 
@@ -20,6 +22,14 @@ public class MergeRequestRequestDTO {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public List<MultipartFile> getFiles() {
+        return this.files;
+    }
+
+    public void setFiles(List<MultipartFile> files) {
+        this.files = files;
     }
 
     public MergeRequest toMergeRequestObject() {
