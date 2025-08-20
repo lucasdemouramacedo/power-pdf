@@ -1,10 +1,13 @@
 package com.power.power_pdf.service;
 
 import com.power.power_pdf.entity.MergeRequest;
+import com.power.power_pdf.entity.MergeRequestFile;
 import com.power.power_pdf.exceptions.MergeRequestCreationException;
 import com.power.power_pdf.repository.MergeRequestRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
@@ -36,24 +39,37 @@ public class MergeRequestService {
         }
     }
 
+    @Transactional
     public MergeRequest makeMergeRequest(MergeRequest mergeRequest, List<MultipartFile> files) {
         try {
-            mergeRequest = mergeRequestRepository.save(mergeRequest);
+            MergeRequest mergeRequestSaved = this.save(mergeRequest);
 
-            files.forEach(f ->
-                    {
-                        try {
-                            UUID uuid = UUID.randomUUID();
-                            storageService.upload("requestsfiles", uuid + f.getOriginalFilename(), f.getInputStream(), f.getContentType());
-                        } catch (IOException e) {
-                            log.error("Error (MergeRequestService.makeMergeRequest.forEach): ", e.getMessage());
-                        }
-                    }
-            );
-            return mergeRequest;
+            for (MultipartFile file : files) {
+                uploadFile(file, mergeRequestSaved);
+            }
+
+            return mergeRequestSaved;
+        } catch (IOException e) {
+            log.error("Error (MergeRequestService.makeMergeRequest): ", e);
+            throw new MergeRequestCreationException("Erro ao fazer upload dos arquivos!");
         } catch (Exception e) {
-            log.error("Error (MergeRequestService.makeMergeRequest): ", e.getMessage());
+            log.error("Error (MergeRequestService.makeMergeRequest): ", e);
             throw new MergeRequestCreationException();
         }
+    }
+
+    private void uploadFile(MultipartFile file, MergeRequest mergeRequest) throws IOException {
+        String baseName = FilenameUtils.getBaseName(file.getOriginalFilename());
+        String objectId = UUID.randomUUID().toString() + "_" + baseName;
+
+        MergeRequestFile mergeRequestFile = new MergeRequestFile(mergeRequest, baseName, objectId);
+        MergeRequestFile mergeRequestFileSaved = mergeRequestFileService.save(mergeRequestFile);
+
+        storageService.upload(
+                "requestsfiles",
+                file.getOriginalFilename(),
+                file.getInputStream(),
+                file.getContentType()
+        );
     }
 }
