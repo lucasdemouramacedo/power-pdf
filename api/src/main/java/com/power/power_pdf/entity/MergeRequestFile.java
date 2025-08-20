@@ -6,7 +6,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "merge_requests_files")
-public class MergeRequestFiles {
+public class MergeRequestFile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,10 +26,9 @@ public class MergeRequestFiles {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public MergeRequestFiles() {}
+    public MergeRequestFile() {}
 
-    public MergeRequestFiles(UUID id, MergeRequest mergeRequest, String fileName) {
-        this.id = id;
+    public MergeRequestFile(MergeRequest mergeRequest, String fileName) {
         this.mergeRequest = mergeRequest;
         this.fileName = fileName;
     }
@@ -48,6 +47,14 @@ public class MergeRequestFiles {
 
     public void setMergeRequest(MergeRequest mergeRequest) {
         this.mergeRequest = mergeRequest;
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+    
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     @PrePersist
