@@ -20,6 +20,9 @@ public class MergeRequestFile {
     @Column(name = "file_name", nullable = false)
     private String fileName;
 
+    @Column(name = "object_id", nullable = false)
+    private String objectId;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -52,14 +55,23 @@ public class MergeRequestFile {
     public String getFileName() {
         return this.fileName;
     }
-    
+
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public String getObjectId() {
+        return this.objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
     }
 
     @PreUpdate
