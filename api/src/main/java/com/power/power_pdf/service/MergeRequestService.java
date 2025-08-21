@@ -1,5 +1,6 @@
 package com.power.power_pdf.service;
 
+import com.power.power_pdf.dto.MergeRequestResponseDTO;
 import com.power.power_pdf.entity.MergeRequest;
 import com.power.power_pdf.entity.MergeRequestFile;
 import com.power.power_pdf.exceptions.MergeRequestCreationException;
@@ -10,8 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -58,6 +63,16 @@ public class MergeRequestService {
         }
     }
 
+    public List<MergeRequestResponseDTO> getMergeRequests(LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(LocalTime.MAX);
+        List<MergeRequest> mergeRequests = mergeRequestRepository.findByCreatedAtBetween(startDateTime, endDateTime);
+        List<MergeRequestResponseDTO> dtos = mergeRequests.stream()
+                .map(mergeRequest -> new MergeRequestResponseDTO().fromEntity(mergeRequest))
+                .collect(Collectors.toList());
+        return dtos;
+    }
+
     private void uploadFile(MultipartFile file, MergeRequest mergeRequest) throws IOException {
         String baseName = FilenameUtils.getBaseName(file.getOriginalFilename());
         String objectId = UUID.randomUUID().toString() + "_" + baseName;
@@ -67,7 +82,7 @@ public class MergeRequestService {
 
         storageService.upload(
                 "requestsfiles",
-                file.getOriginalFilename(),
+                objectId + ".pdf",
                 file.getInputStream(),
                 file.getContentType()
         );

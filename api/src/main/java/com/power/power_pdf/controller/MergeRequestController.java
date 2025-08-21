@@ -4,11 +4,14 @@ import com.power.power_pdf.dto.MergeRequestRequestDTO;
 import com.power.power_pdf.dto.MergeRequestResponseDTO;
 import com.power.power_pdf.entity.MergeRequest;
 import com.power.power_pdf.service.MergeRequestService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 @RestController
@@ -28,5 +31,15 @@ public class MergeRequestController {
         MergeRequestResponseDTO response = new MergeRequestResponseDTO().fromEntity(mergeRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MergeRequestResponseDTO>> list(
+            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endDate) {
+
+        List<MergeRequestResponseDTO> response = mergeRequestService.getMergeRequests(startDate, endDate);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 }
