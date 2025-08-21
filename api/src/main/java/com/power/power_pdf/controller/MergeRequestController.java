@@ -1,16 +1,18 @@
 package com.power.power_pdf.controller;
 
+import com.power.power_pdf.dto.FileDownloadDTO;
 import com.power.power_pdf.dto.MergeRequestRequestDTO;
 import com.power.power_pdf.dto.MergeRequestResponseDTO;
 import com.power.power_pdf.entity.MergeRequest;
 import com.power.power_pdf.service.MergeRequestService;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -41,5 +43,15 @@ public class MergeRequestController {
         List<MergeRequestResponseDTO> response = mergeRequestService.getMergeRequests(startDate, endDate);
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+    @GetMapping("/{id}/download")
+    public ResponseEntity<InputStreamResource> download(@PathVariable String id) {
+        FileDownloadDTO file = mergeRequestService.downloadFile(id);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + file.getFilename())
+                .contentType(file.getMediaType())
+                .body(file.getResource());
     }
 }
