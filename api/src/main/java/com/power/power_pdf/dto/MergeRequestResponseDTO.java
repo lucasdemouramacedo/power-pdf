@@ -1,7 +1,6 @@
 package com.power.power_pdf.dto;
 
 import com.power.power_pdf.entity.MergeRequest;
-import com.power.power_pdf.enums.MergeRequestStatus;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,16 +8,16 @@ public class MergeRequestResponseDTO {
 
     private UUID id;
     private String name;
-    private MergeRequestStatus status;
+    private String link;
     private LocalDateTime createdAt;
 
     public MergeRequestResponseDTO() {}
 
-    public MergeRequestResponseDTO(UUID id, String name, MergeRequestStatus status,
+    public MergeRequestResponseDTO(UUID id, String name, String link,
                                    LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
-        this.status = status;
+        this.link = link;
         this.createdAt = createdAt;
     }
 
@@ -26,7 +25,7 @@ public class MergeRequestResponseDTO {
         return new MergeRequestResponseDTO(
                 mergeRequest.getId(),
                 mergeRequest.getFileName(),
-                mergeRequest.getStatus(),
+                mergeRequest.getLink(),
                 mergeRequest.getCreatedAt()
         );
     }
@@ -47,12 +46,12 @@ public class MergeRequestResponseDTO {
         this.name = name;
     }
 
-    public MergeRequestStatus getStatus() {
-        return status;
+    public String getLink() {
+        return link;
     }
 
-    public  void setStatus(MergeRequestStatus status) {
-        this.status = status;
+    public  void setLink(String link) {
+        this.link = link;
     }
 
     public LocalDateTime getCreatedAt() {
