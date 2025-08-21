@@ -1,5 +1,6 @@
 package com.power.power_pdf.service;
 
+import com.power.power_pdf.dto.FileDownloadDTO;
 import com.power.power_pdf.dto.MergeRequestResponseDTO;
 import com.power.power_pdf.entity.MergeRequest;
 import com.power.power_pdf.entity.MergeRequestFile;
@@ -9,6 +10,8 @@ import com.power.power_pdf.messaging.producer.MergerProducer;
 import com.power.power_pdf.repository.MergeRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,7 +59,6 @@ public class MergeRequestService {
         }
     }
 
-    @Transactional
     public MergeRequest makeMergeRequest(MergeRequest mergeRequest, List<MultipartFile> files) {
         try {
             MergeRequest mergeRequestSaved = this.save(mergeRequest);
@@ -90,6 +92,7 @@ public class MergeRequestService {
         return mergeRequestRepository.findFirstById(id);
     }
 
+    @Transactional
     public void makePdfsMerge(String mergeRequestId) throws IOException {
         MergeRequest mergeRequest = this.getMergeRequestById(UUID.fromString(mergeRequestId));
         List<MergeRequestFile> mergeRequestFiles = mergeRequestFileService.getFilesByMergeRequestId(mergeRequest.getId());
@@ -97,18 +100,25 @@ public class MergeRequestService {
         List<InputStream> files = downloadFiles(mergeRequestFiles);
         byte[] mergedPdfBytes = mergerService.mergePdfs(files);
         String objectId = UUID.randomUUID().toString() + "_" + mergeRequest.getFileName() + ".pdf";
+        try {
+            storageService.upload(
+                    "mergedfiles",
+                    objectId,
+                    new ByteArrayInputStream(mergedPdfBytes),
+                    "application/pdf"
+            );
 
-        storageService.upload(
-                "mergedfiles",
-                objectId,
-                new ByteArrayInputStream(mergedPdfBytes),
-                "application/pdf"
-        );
-
-        mergeRequest.setObjectId(objectId);
-        mergeRequest.setMergedAt(LocalDateTime.now());
-        mergeRequest.setStatus(MergeRequestStatus.COMPLETED);
-        this.save(mergeRequest);
+            mergeRequest.setObjectId(objectId);
+            mergeRequest.setMergedAt(LocalDateTime.now());
+            mergeRequest.setStatus(MergeRequestStatus.COMPLETED);
+            this.save(mergeRequest);
+        } finally {
+            for (InputStream file : files) {
+                if (file != null) {
+                    file.close();
+                }
+            }
+        }
     }
 
     private void uploadFile(MultipartFile file, MergeRequest mergeRequest) throws IOException {
@@ -129,8 +139,17 @@ public class MergeRequestService {
     public List<InputStream> downloadFiles(List<MergeRequestFile> mergeRequestFiles) throws IOException {
         List<InputStream> files = new ArrayList<>();
         for (MergeRequestFile mergeRequestFile : mergeRequestFiles) {
-            files.add(storageService.download("requestsfiles", mergeRequestFile.getObjectId() + ".pdf"));
+            files.add(storageService.download("requestsfiles", mergeRequestFile.getObjectId()));
         }
         return files;
+    }
+
+    public FileDownloadDTO downloadFile(String mergeRequestId) {
+        MergeRequest mergeRequest = this.getMergeRequestById(UUID.fromString(mergeRequestId));
+        InputStream file = storageService.download("mergedfiles", mergeRequest.getObjectId());
+        InputStreamResource resource = new InputStreamResource(file);
+        String filename = mergeRequest.getFileName() + ".pdf";
+
+        return new FileDownloadDTO(resource, filename, MediaType.APPLICATION_PDF);
     }
 }
