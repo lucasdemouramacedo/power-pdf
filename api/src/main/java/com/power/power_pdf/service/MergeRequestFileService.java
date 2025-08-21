@@ -4,6 +4,9 @@ import com.power.power_pdf.entity.MergeRequestFile;
 import com.power.power_pdf.repository.MergeRequestFileRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class MergeRequestFileService {
 
@@ -19,5 +22,9 @@ public class MergeRequestFileService {
         } catch (Exception e) {
             throw new RuntimeException("Erro ao salvar merge request: " + e.getMessage());
         }
+    }
+
+    public List<MergeRequestFile> getFilesByMergeRequestId(UUID mergeRequestId) {
+        return mergeRequestFileRepository.findMergeRequestFilesByMergeRequestIdOrderByCreatedAtAsc(mergeRequestId);
     }
 }
