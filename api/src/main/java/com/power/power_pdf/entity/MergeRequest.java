@@ -91,6 +91,10 @@ public class MergeRequest {
         return updatedAt;
     }
 
+    public String getLink() {
+        return "http://localhost:8080/merge/" + this.id + "/download";
+    }
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
