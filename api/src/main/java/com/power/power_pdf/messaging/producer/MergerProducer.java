@@ -17,7 +17,7 @@ public class MergerProducer {
     }
 
     public void sendMessage(String message) {
-        log.info("Info (RabbitMQ - MergerProducer) - Sending message: )", message);
+        log.info("Info (RabbitMQ - MergerProducer) - Sending message: {})", message);
         rabbitTemplate.convertAndSend(EXCHANGE_NAME, ROUTING_KEY, message);
     }
 }
