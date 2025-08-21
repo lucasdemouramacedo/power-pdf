@@ -39,7 +39,7 @@ public class StorageService {
                             .build()
             );
         } catch(Exception e) {
-            log.error("Erro (StorageService.download): ", e.getMessage());
+            log.error("Erro (StorageService.download): {}", e.getMessage());
         }
         return null;
     }
