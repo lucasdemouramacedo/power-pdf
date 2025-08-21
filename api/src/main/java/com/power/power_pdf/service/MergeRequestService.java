@@ -4,6 +4,7 @@ import com.power.power_pdf.dto.MergeRequestResponseDTO;
 import com.power.power_pdf.entity.MergeRequest;
 import com.power.power_pdf.entity.MergeRequestFile;
 import com.power.power_pdf.exceptions.MergeRequestCreationException;
+import com.power.power_pdf.messaging.producer.MergerProducer;
 import com.power.power_pdf.repository.MergeRequestRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -25,13 +26,16 @@ public class MergeRequestService {
     private final MergeRequestRepository mergeRequestRepository;
     private final MergeRequestFileService mergeRequestFileService;
     private final StorageService storageService;
+    private final MergerProducer mergerProducer;
 
     public MergeRequestService(MergeRequestRepository mergeRequestRepository,
                                MergeRequestFileService mergeRequestFileService,
-                               StorageService storageService) {
+                               StorageService storageService,
+                               MergerProducer mergerProducer) {
         this.mergeRequestRepository = mergeRequestRepository;
         this.mergeRequestFileService = mergeRequestFileService;
         this.storageService = storageService;
+        this.mergerProducer = mergerProducer;
     }
 
     public MergeRequest save(MergeRequest mergeRequest) {
@@ -53,6 +57,7 @@ public class MergeRequestService {
                 uploadFile(file, mergeRequestSaved);
             }
 
+            mergerProducer.sendMessage(mergeRequestSaved.getId().toString());
             return mergeRequestSaved;
         } catch (IOException e) {
             log.error("Error (MergeRequestService.makeMergeRequest): ", e);
