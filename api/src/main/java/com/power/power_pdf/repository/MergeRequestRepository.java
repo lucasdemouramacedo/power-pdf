@@ -12,4 +12,6 @@ import java.util.UUID;
 public interface MergeRequestRepository extends JpaRepository<MergeRequest, UUID> {
 
     List<MergeRequest> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    MergeRequest findFirstById(UUID id);
 }
