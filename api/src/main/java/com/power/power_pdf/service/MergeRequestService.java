@@ -11,11 +11,17 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -27,15 +33,18 @@ public class MergeRequestService {
     private final MergeRequestFileService mergeRequestFileService;
     private final StorageService storageService;
     private final MergerProducer mergerProducer;
+    private final MergerService mergerService;
 
     public MergeRequestService(MergeRequestRepository mergeRequestRepository,
                                MergeRequestFileService mergeRequestFileService,
                                StorageService storageService,
-                               MergerProducer mergerProducer) {
+                               MergerProducer mergerProducer,
+                               MergerService mergerService) {
         this.mergeRequestRepository = mergeRequestRepository;
         this.mergeRequestFileService = mergeRequestFileService;
         this.storageService = storageService;
         this.mergerProducer = mergerProducer;
+        this.mergerService = mergerService;
     }
 
     public MergeRequest save(MergeRequest mergeRequest) {
@@ -76,6 +85,29 @@ public class MergeRequestService {
                 .map(mergeRequest -> new MergeRequestResponseDTO().fromEntity(mergeRequest))
                 .collect(Collectors.toList());
         return dtos;
+    }
+    
+    public MergeRequest getMergeRequestById(UUID id){
+        return mergeRequestRepository.findById(id).orElse(null);
+    }
+
+    public void makePdfsMerge(String mergeRequestId) throws IOException {
+        UUID mergeRequestIdUUID = UUID.fromString(mergeRequestId);
+        MergeRequest mergeRequest = getMergeRequestById(mergeRequestIdUUID);
+        List<MergeRequestFile> mergeRequestFiles = mergeRequestFileService.getFilesByMergeRequestId(mergeRequestIdUUID);
+
+        List<InputStream> files = new ArrayList<>();
+        for (MergeRequestFile mergeRequestFile : mergeRequestFiles) {
+            files.add(storageService.download("requestsfiles", mergeRequestFile.getObjectId() + ".pdf"));
+        }
+        byte[] mergedPdfBytes = mergerService.mergePdfs(files);
+
+        storageService.upload(
+                "mergedfiles",
+                UUID.randomUUID().toString()+ "_" +mergeRequest.getFileName() + ".pdf",
+                new ByteArrayInputStream(mergedPdfBytes),
+                "application/pdf"
+        );
     }
 
     private void uploadFile(MultipartFile file, MergeRequest mergeRequest) throws IOException {
