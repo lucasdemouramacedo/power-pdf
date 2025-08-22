@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
-import { DateRange } from "@/types/DateRange";
-
-type FilterProps = {
-    onDateChange: (dates: DateRange) => void;
-};
+import { DateRange } from "@/types";
+import { useMergedFiles } from '@/contexts/MergedFilesContext';
 
 const formatDate = (date: Date) => {
   return date.toISOString().split("T")[0];
 };
 
-export default function Filter({ onDateChange }: FilterProps) {
+export default function Filter() {
+    const { fetchFiles } = useMergedFiles();
     const [rangeDate, setRangeDate] = useState<DateRange>({
         start: formatDate(new Date()),
         end: formatDate(new Date()),
@@ -19,10 +17,12 @@ export default function Filter({ onDateChange }: FilterProps) {
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'start' | 'end') => {
         const value = e.target.value;
-        const newDate = value ? new Date(value) : null;
+        const newDate = value ? formatDate(new Date(value)) : null;
 
         setRangeDate(prev => ({ ...prev, [field]: newDate }));
         setActivePreset(null);
+
+        fetchFiles(rangeDate.start,rangeDate.end);
     };
 
     const handleSetPreset = (preset: string) => {
@@ -38,10 +38,6 @@ export default function Filter({ onDateChange }: FilterProps) {
         setRangeDate({ start: formatDate(startDate), end: formatDate(endDate) });
         setActivePreset(preset);
     };
-
-    useEffect(() => {
-        onDateChange(rangeDate);
-    }, [rangeDate, onDateChange]);
 
     const presetClasses = "cursor-pointer text-blue-500 outline-none w-auto px-1";
     const activePresetClasses = "font-bold";

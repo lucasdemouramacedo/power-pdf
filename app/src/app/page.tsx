@@ -6,7 +6,8 @@ import Button from "@/components/Button";
 import { useState, FormEvent } from 'react';
 import PdfUploadThumbnail from "@/components/PdfUploadThumbnail";
 import Filter from "@/components/Filter";
-import { DateRange } from "@/types/DateRange";
+import { DateRange } from "@/types";
+import List from "@/components/List";
 
 type Form = {
     fileName: string;
@@ -19,11 +20,7 @@ export default function Home() {
         files: null,
     });
 
-    const [currentDates, setCurrentDates] = useState<DateRange | null>(null);
-    const handleFilterUpdate = (dates: DateRange) => {
-        console.log('Datas recebidas do componente filho:', dates);
-        setCurrentDates(dates);
-    };
+
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -63,22 +60,19 @@ export default function Home() {
 
     return (
         <Layout>
-            <div className="bg-white w-[100%] h-[200px] rounded-lg p-7 border-1 border-gray-300">
-                <div className="w-[100%] h-[100%] rounded-lg border-3 border-dashed border-blue-300">
-                    <PdfUploadThumbnail filesURLs={Array.from(formData.files || []).map(file => URL.createObjectURL(file))}></PdfUploadThumbnail>
+            <form action="">
+                <div className="bg-white w-[100%] h-[200px] rounded-lg p-7 border-1 border-gray-300">
+                    <div className="w-[100%] h-[100%] rounded-lg border-3 border-dashed border-blue-300">
+                        <PdfUploadThumbnail filesURLs={Array.from(formData.files || []).map(file => URL.createObjectURL(file))}></PdfUploadThumbnail>
+                    </div>
                 </div>
-            </div>
-            <Input type="text" label="Nome do pdf" id="fileName" name="fileName" onChange={handleInputChange} value={formData.fileName} />
-            <Input type="file" accept="application/pdf" label="Selecione os PDF's" id="files" name="files" onChange={handleFileChange} value={""} multiple />
-            <Button label="Realizar o merge" />
-            <div className="flex items-center justify-between flex-col sm:flex-row">
-                <div>
-                    <span className="text-sm font-bold text-blue-500">Merges</span>
-                    <span className="bg-gray-300 rounded-lg px-2 w-fit h-fit text-blue-gray-500 ml-2 font-bold text-[0.75rem]">0</span>
-                </div>
-                <Filter onDateChange={handleFilterUpdate} />
-            </div>
-
+                <Input type="text" label="Nome do pdf" id="fileName" name="fileName" onChange={handleInputChange} value={formData.fileName} />
+                {
+                    //<Input type="file" accept="application/pdf" label="Selecione os PDF's" id="files" name="files" onChange={handleFileChange} value={""} multiple />
+                }
+                <Button label="Realizar o merge" />
+            </form>
+            <List />
         </Layout>
     );
 }
