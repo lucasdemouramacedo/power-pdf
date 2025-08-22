@@ -18,7 +18,7 @@ export default function Layout({ children }: LayoutProps) {
                 />
             </header>
             <main className="h-[100%] w-[100%] flex items-start justify-center">
-                <div className="contain-layout">{children}</div>
+                <div className="w-[100%] max-w-[1000px] px-10 mt-[-50px]">{children}</div>
             </main>
             <footer className="flex items-center justify-center">
                 <Image

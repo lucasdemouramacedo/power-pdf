@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
+    "copy-pdfjs-worker": "cp ./node_modules/pdfjs-dist/build/pdf.worker.min.mjs ./public/",
+    "dev": "npm run copy-pdfjs-worker && next dev --turbopack",
+    "build": "npm run copy-pdfjs-worker && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "next": "15.4.6",
-    "pdfjs-dist": "^5.4.54",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },
