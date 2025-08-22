@@ -1,0 +1,88 @@
+import { useEffect, useState } from 'react';
+import { DateRange } from "@/types/DateRange";
+
+type FilterProps = {
+    onDateChange: (dates: DateRange) => void;
+};
+
+const formatDate = (date: Date) => {
+  return date.toISOString().split("T")[0];
+};
+
+export default function Filter({ onDateChange }: FilterProps) {
+    const [rangeDate, setRangeDate] = useState<DateRange>({
+        start: formatDate(new Date()),
+        end: formatDate(new Date()),
+    });
+
+    const [activePreset, setActivePreset] = useState<string | null>();
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'start' | 'end') => {
+        const value = e.target.value;
+        const newDate = value ? new Date(value) : null;
+
+        setRangeDate(prev => ({ ...prev, [field]: newDate }));
+        setActivePreset(null);
+    };
+
+    const handleSetPreset = (preset: string) => {
+        const endDate = new Date();
+        let startDate = new Date();
+
+        if (preset === '7dias') {
+            startDate.setDate(endDate.getDate() - 7);
+        } else if (preset === '30dias') {
+            startDate.setDate(endDate.getDate() - 30);
+        }
+
+        setRangeDate({ start: formatDate(startDate), end: formatDate(endDate) });
+        setActivePreset(preset);
+    };
+
+    useEffect(() => {
+        onDateChange(rangeDate);
+    }, [rangeDate, onDateChange]);
+
+    const presetClasses = "cursor-pointer text-blue-500 outline-none w-auto px-1";
+    const activePresetClasses = "font-bold";
+
+    return (
+        <div className="bg-white rounded-md px-2 py-1 w-fit text-sm font-medium flex items-center">
+            <span className="text-blue-gray-500">Filtro:</span>
+            <input
+                type="date"
+                value={rangeDate.start ?? ""}
+                onChange={(e) => handleDateChange(e, 'start')}
+                className="text-blue-500 ml-2 outline-none w-[85px] [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
+            />
+            <span className="text-blue-gray-500 mx-2">-</span>
+            <input
+                type="date"
+                value={rangeDate.end ?? ""}
+                onChange={(e) => handleDateChange(e, 'end')}
+                className="text-blue-500 ml-2 outline-none w-[85px] [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
+            />
+            <span className="text-blue-gray-500 mx-2">|</span>
+            <span
+                onClick={() => handleSetPreset('hoje')}
+                className={`${presetClasses} ${activePreset === 'hoje' ? activePresetClasses : ''}`}
+            >
+                Hoje
+            </span>
+            <span className="text-blue-gray-500 mx-2">-</span>
+            <span
+                onClick={() => handleSetPreset('7dias')}
+                className={`${presetClasses} ${activePreset === '7dias' ? activePresetClasses : ''}`}
+            >
+                7 dias
+            </span>
+            <span className="text-blue-gray-500 mx-2">-</span>
+            <span
+                onClick={() => handleSetPreset('30dias')}
+                className={`${presetClasses} ${activePreset === '30dias' ? activePresetClasses : ''}`}
+            >
+                30 dias
+            </span>
+        </div>
+    );
+}
