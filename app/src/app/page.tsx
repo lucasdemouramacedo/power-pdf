@@ -5,10 +5,8 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 import { useState, FormEvent } from 'react';
 import PdfUploadThumbnail from "@/components/PdfUploadThumbnail";
-import Filter from "@/components/Filter";
-import { DateRange } from "@/types";
 import List from "@/components/List";
-
+import InputFile from "@/components/InputFile";
 type Form = {
     fileName: string;
     files: FileList | null;
@@ -61,15 +59,8 @@ export default function Home() {
     return (
         <Layout>
             <form action="">
-                <div className="bg-white w-[100%] h-[200px] rounded-lg p-7 border-1 border-gray-300">
-                    <div className="w-[100%] h-[100%] rounded-lg border-3 border-dashed border-blue-300">
-                        <PdfUploadThumbnail filesURLs={Array.from(formData.files || []).map(file => URL.createObjectURL(file))}></PdfUploadThumbnail>
-                    </div>
-                </div>
+                <InputFile files={formData.files} label="Nome do pdf" id="fileName" name="fileName" onChange={handleFileChange} />
                 <Input type="text" label="Nome do pdf" id="fileName" name="fileName" onChange={handleInputChange} value={formData.fileName} />
-                {
-                    //<Input type="file" accept="application/pdf" label="Selecione os PDF's" id="files" name="files" onChange={handleFileChange} value={""} multiple />
-                }
                 <Button label="Realizar o merge" />
             </form>
             <List />
