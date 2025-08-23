@@ -6,7 +6,6 @@ import Spinner from "./Spinner";
 export default function PdfUploadThumbnail({ filesURLs }: { filesURLs: Array<string> }) {
   const [thumbnails, setThumbnails] = useState<string[]>([]);
   const [pdfjsLib, setPdfjsLib] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -14,11 +13,9 @@ export default function PdfUploadThumbnail({ filesURLs }: { filesURLs: Array<str
       .then((module) => {
         module.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.mjs`;
         setPdfjsLib(module);
-        setIsLoading(false);
       })
       .catch((err) => {
         console.error("Failed to load pdf.js:", err);
-        setIsLoading(false);
       });
   }, []);
 
