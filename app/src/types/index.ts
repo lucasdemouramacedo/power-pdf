@@ -16,3 +16,8 @@ export interface MergedFilesContextState {
   error: string | null;
   fetchFiles: (startDate: string | null, endDate: string | null) => Promise<void>;
 }
+
+export interface NotificationContextState {
+  showInfo: (message: string) => void;
+  showError: (message: string) => void;
+}
