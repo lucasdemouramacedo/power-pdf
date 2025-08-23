@@ -9,7 +9,7 @@ type InputProps = {
     error?: string | null;
     multiple?: boolean;
     accept?: string;
-    files: FileList | null;
+    files: File[];
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -18,10 +18,9 @@ export default function InputFile(props: InputProps) {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
-        if (files) {
-            const urls = Array.from(files).map(file => URL.createObjectURL(file));
-            setFileURLs(urls);
-        }
+        const urls = files ? Array.from(files).map(file => URL.createObjectURL(file)) : [];
+        setFileURLs(urls);
+        
         props.onChange(e);
     };
 
@@ -30,7 +29,7 @@ export default function InputFile(props: InputProps) {
             <label htmlFor={props.id}>
                 <div className="bg-white w-[100%] h-[200px] rounded-lg p-7 border-1 border-gray-300">
                     <div className={`w-[100%] h-[100%] rounded-lg border-3 border-dashed ${!props.error ? 'border-blue-300' : 'border-red-300' }`}>
-                        <PdfUploadThumbnail filesURLs={fileURLs}></PdfUploadThumbnail>
+                        {props.files.length > 0 && <PdfUploadThumbnail filesURLs={fileURLs}></PdfUploadThumbnail>}
                     </div>
                 </div>
             </label>
