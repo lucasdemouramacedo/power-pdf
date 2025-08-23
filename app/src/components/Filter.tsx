@@ -58,7 +58,7 @@ export default function Filter() {
                 onChange={(e) => handleDateChange(e, 'end')}
                 className="text-blue-500 ml-2 outline-none w-[85px] [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden"
             />
-            <span className="text-blue-gray-500 mx-2">|</span>
+            <span className="text-blue-gray-500 mx-2 font-bold">|</span>
             <span
                 onClick={() => handleSetPreset('hoje')}
                 className={`${presetClasses} ${activePreset === 'hoje' ? activePresetClasses : ''}`}

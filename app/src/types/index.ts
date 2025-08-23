@@ -11,7 +11,7 @@ export interface MergedFile {
 }
 
 export interface MergedFilesContextState {
-  files: MergedFile[];
+  files: MergedFile[] | null;
   loading: boolean;
   error: string | null;
   fetchFiles: (startDate: string | null, endDate: string | null) => Promise<void>;

@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 import { MergedFile, MergedFilesContextState } from '@/types';
+import { getFiles } from '@/services/MergeService';
 
 const MergedFilesContext = createContext<MergedFilesContextState | undefined>(undefined);
 
@@ -10,7 +11,7 @@ interface MergedFilesProviderProps {
 }
 
 export function MergedFilesProvider({ children }: MergedFilesProviderProps) {
-  const [files, setFiles] = useState<MergedFile[]>([]);
+  const [files, setFiles] = useState<MergedFile[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [currentDates, setCurrentDates] = useState<{ startDate: string, endDate: string } | null>(null);
@@ -34,23 +35,16 @@ export function MergedFilesProvider({ children }: MergedFilesProviderProps) {
         finalEndDate = finalEndDate || todayString;
       }
 
-      const url = `http://localhost:8080/merge?startDate=${finalStartDate}&endDate=${finalEndDate}`;
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error('Falha ao buscar dados. Status: ' + response.status);
-      }
-
-      const data: MergedFile[] = await response.json();
+      const data: MergedFile[] = await getFiles(finalStartDate, finalEndDate);
+      
       setFiles(data);
-      setCurrentDates({ startDate: finalStartDate, endDate: finalEndDate }); 
+      setCurrentDates({ startDate: finalStartDate, endDate: finalEndDate });
     } catch (err: any) {
       setError(err.message || 'Ocorreu um erro desconhecido.');
       setFiles([]);
     } finally {
       setLoading(false);
     }
-    console.log('Arquivos buscados:', files);
   }, []);
 
   const value: MergedFilesContextState = {
