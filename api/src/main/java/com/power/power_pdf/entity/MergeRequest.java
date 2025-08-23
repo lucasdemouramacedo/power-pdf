@@ -92,7 +92,11 @@ public class MergeRequest {
     }
 
     public String getLink() {
-        return "http://localhost:8080/merge/" + this.id + "/download";
+        if (this.objectId != null && !this.objectId.isEmpty()) {
+            return "http://localhost:8080/merge/" + this.id + "/download";
+        } else {
+            return "";
+        }
     }
 
     @PrePersist
