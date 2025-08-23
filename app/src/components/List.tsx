@@ -4,6 +4,7 @@ import { useMergedFiles } from "@/contexts/MergedFilesContext";
 import { LuCalendarArrowUp } from "react-icons/lu";
 import { CgFileDocument } from "react-icons/cg";
 import Link from "./Link";
+import Spinner from "./Spinner";
 
 export default function List() {
     const { files, loading, error, fetchFiles } = useMergedFiles();
@@ -17,15 +18,15 @@ export default function List() {
                 <div>
                     <span className="text-sm font-bold text-blue-500">Merges</span>
                     <span className="bg-gray-300 rounded-lg px-2 w-fit h-fit text-blue-gray-500 ml-2 font-bold text-xs">
-                        {files.length}
+                        {(files ? files.length : 0)}
                     </span>
                 </div>
                 <Filter />
             </div>
             <div className="h-[298px] overflow-y-auto rounded-lg">
-                {loading && files.length == 0 && <p>Carregando...</p>}
-                {!loading && !error && files.length === 0 && <p>Nenhum arquivo encontrado.</p>}
-                {!loading && !error && files.length > 0 && (
+                {loading && <Spinner />}
+                {!loading && !error && (files ? files.length === 0 : false) && <p>Nenhum arquivo encontrado.</p>}
+                {!loading && !error && files && files.length > 0 && (
                     <ul>
                         {files.map((file) => (
                             <li key={file.id} className="text-blue-gray-500 h-[56px] mb-2 p-1 border-1 border-gray-300 bg-gray-200 rounded-lg grid grid-cols-[1fr_1fr_1fr] items-center px-9">
