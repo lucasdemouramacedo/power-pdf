@@ -4,6 +4,7 @@ import Input from "./Input";
 import Button from "./Button";
 import { newMerge } from "@/services/MergeService";
 import { useNotification } from "@/contexts/NotificationContext"
+import { useMergedFiles } from "@/contexts/MergedFilesContext";
 
 type Form = {
     fileName: string;
@@ -26,6 +27,7 @@ export default function MergeForm() {
         files: '',
     });
     const { showInfo, showError } = useNotification();
+    const { fetchFiles } = useMergedFiles();
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -51,6 +53,7 @@ export default function MergeForm() {
         const responseJson = await response.json();
         if (response.status === 201) {
             showInfo("Merge solicitado com sucesso!");
+            fetchFiles(null, null);
             setFormData({ fileName: '', files: [] });
             setFormErrors({ fileName: '', files: '' });
         } else if (responseJson.errors) {
