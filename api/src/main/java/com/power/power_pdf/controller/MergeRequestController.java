@@ -5,6 +5,9 @@ import com.power.power_pdf.dto.MergeRequestRequestDTO;
 import com.power.power_pdf.dto.MergeRequestResponseDTO;
 import com.power.power_pdf.entity.MergeRequest;
 import com.power.power_pdf.service.MergeRequestService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-
 
 @RestController
 @RequestMapping("/merge")
@@ -27,7 +29,7 @@ public class MergeRequestController {
     }
 
     @PostMapping
-    public ResponseEntity<MergeRequestResponseDTO> create(MergeRequestRequestDTO dto) {
+    public ResponseEntity<MergeRequestResponseDTO> create(@Valid @ModelAttribute MergeRequestRequestDTO dto) {
 
         MergeRequest mergeRequest = mergeRequestService.makeMergeRequest(dto.toMergeRequestObject(), dto.getFiles());
         MergeRequestResponseDTO response = new MergeRequestResponseDTO().fromEntity(mergeRequest);
