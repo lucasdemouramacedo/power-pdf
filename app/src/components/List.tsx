@@ -13,6 +13,11 @@ export default function List() {
     useEffect(() => {
         fetchFiles(null, null);
     }, [fetchFiles]);
+
+    const handleDateChange = (dates: any) => {
+        fetchFiles(dates.start, dates.end);
+    };
+
     return (
         <div className="">
             <div className="mt-15 mb-5 flex items-center justify-between flex-col sm:flex-row">
@@ -22,7 +27,7 @@ export default function List() {
                         {(files ? files.length : 0)}
                     </span>
                 </div>
-                <Filter />
+                <Filter onChangeDate={handleDateChange} preset={"hoje"} />
             </div>
             <div className="h-[298px] overflow-y-auto rounded-lg">
                 {loading && <Spinner />}
