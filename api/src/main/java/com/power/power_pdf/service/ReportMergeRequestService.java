@@ -23,7 +23,7 @@ public class ReportMergeRequestService {
     }
 
     public List<MergeRequestCountByDateDTO> reportMergeRequestsByDate(LocalDate start, LocalDate end) {
-        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime startDateTime = start.atStartOfDay().minusDays(1);
         LocalDateTime endDateTime = end.atTime(LocalTime.MAX);
 
         List<MergeRequestCountByDateDTO> existingCounts = reportMergeRequestRepository
@@ -37,10 +37,11 @@ public class ReportMergeRequestService {
         LocalDate startDate = startDateTime.toLocalDate();
         LocalDate endDate = endDateTime.toLocalDate();
 
-        return startDate.datesUntil(endDate.plusDays(1))
+        return startDate.datesUntil(endDate.plusDays(0))
                 .map(date -> {
+                    LocalDate shiftedDate = date.plusDays(1);
                     long count = countsByDate.getOrDefault(date, 0L);
-                    return new MergeRequestCountByDateDTO(date, count);
+                    return new MergeRequestCountByDateDTO(shiftedDate, count);
                 })
                 .collect(Collectors.toList());
     }
