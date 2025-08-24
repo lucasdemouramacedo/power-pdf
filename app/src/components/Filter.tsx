@@ -1,19 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { DateRange } from "@/types";
-import { useMergedFiles } from '@/contexts/MergedFilesContext';
 
 const formatDate = (date: Date) => {
   return date.toISOString().split("T")[0];
 };
 
-export default function Filter() {
-    const { fetchFiles } = useMergedFiles();
+export default function Filter({ preset, onChangeDate }: { preset: string | null, onChangeDate: (dates: any) => void }) {
     const [rangeDate, setRangeDate] = useState<DateRange>({
         start: formatDate(new Date()),
         end: formatDate(new Date()),
     });
 
-    const [activePreset, setActivePreset] = useState<string | null>();
+    const [activePreset, setActivePreset] = useState<string | null>(preset);
 
     const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>, field: 'start' | 'end') => {
         const value = e.target.value;
@@ -22,7 +20,7 @@ export default function Filter() {
         setRangeDate(prev => ({ ...prev, [field]: newDate }));
         setActivePreset(null);
 
-        fetchFiles(rangeDate.start,rangeDate.end);
+        onChangeDate({ ...rangeDate, [field]: newDate });
     };
 
     const handleSetPreset = (preset: string) => {
@@ -30,13 +28,15 @@ export default function Filter() {
         let startDate = new Date();
 
         if (preset === '7dias') {
-            startDate.setDate(endDate.getDate() - 7);
+            startDate.setDate(endDate.getDate() - 6);
         } else if (preset === '30dias') {
-            startDate.setDate(endDate.getDate() - 30);
+            startDate.setDate(endDate.getDate() -29);
         }
 
         setRangeDate({ start: formatDate(startDate), end: formatDate(endDate) });
         setActivePreset(preset);
+
+        onChangeDate({ start: formatDate(startDate), end: formatDate(endDate) });
     };
 
     const presetClasses = "cursor-pointer text-blue-500 outline-none w-auto px-1";
