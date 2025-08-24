@@ -9,3 +9,42 @@ body {
   font-family: var(--font-inter), sans-serif;
   background: var(--background);
 }
+
+/* Scrollbar padrão para Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #3B82F6 #E5E7EB; /* thumb e track */
+}
+
+/* Scrollbar para Chrome, Edge e Safari */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #E5E7EB;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #3B82F6;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3B82F6;
+}
+
+/* Remover botões da scrollbar */
+::-webkit-scrollbar-button {
+    width: 0;
+    height: 0;
+    display: none;
+    background: transparent;
+}
+
+/* Seleciona o elemento com a barra de rolagem */
+body::-webkit-scrollbar-button {
+    display: none; /* Esconde os botões */
+}
