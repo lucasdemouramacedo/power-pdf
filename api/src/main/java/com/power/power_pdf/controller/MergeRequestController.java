@@ -1,5 +1,6 @@
 package com.power.power_pdf.controller;
 
+import com.power.power_pdf.dto.DateRangeDTO;
 import com.power.power_pdf.dto.FileDownloadDTO;
 import com.power.power_pdf.dto.MergeRequestRequestDTO;
 import com.power.power_pdf.dto.MergeRequestResponseDTO;
@@ -47,11 +48,9 @@ public class MergeRequestController {
 
     @GetMapping
     @Operation(summary = "Busca mesclagens feitas entre datas")
-    public ResponseEntity<List<MergeRequestResponseDTO>> list(
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endDate) {
+    public ResponseEntity<List<MergeRequestResponseDTO>> list(@Valid @ModelAttribute DateRangeDTO dto) {
 
-        List<MergeRequestResponseDTO> response = mergeRequestService.getMergeRequests(startDate, endDate);
+        List<MergeRequestResponseDTO> response = mergeRequestService.getMergeRequests(dto.getStartDate(), dto.getEndDate());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }

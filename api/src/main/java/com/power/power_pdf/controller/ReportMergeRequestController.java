@@ -3,14 +3,13 @@ package com.power.power_pdf.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.power.power_pdf.dto.DateRangeDTO;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.power.power_pdf.dto.MergeRequestCountByDateDTO;
 import com.power.power_pdf.service.ReportMergeRequestService;
@@ -27,11 +26,9 @@ public class ReportMergeRequestController {
 
     @GetMapping
     @Operation(summary = "Retorna a contagem de mesclagens por dia")
-    public ResponseEntity<List<MergeRequestCountByDateDTO>> list(
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDate endDate) {
+    public ResponseEntity<List<MergeRequestCountByDateDTO>> list(@Valid @ModelAttribute DateRangeDTO dto) {
 
-        List<MergeRequestCountByDateDTO> response = reportMergeRequestService.reportMergeRequestsByDate(startDate, endDate);
+        List<MergeRequestCountByDateDTO> response = reportMergeRequestService.reportMergeRequestsByDate(dto.getStartDate(), dto.getEndDate());
 
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
