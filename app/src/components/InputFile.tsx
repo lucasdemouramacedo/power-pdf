@@ -30,6 +30,7 @@ export default function InputFile(props: InputProps) {
                 <div className="bg-white w-[100%] h-[200px] rounded-lg p-7 border-1 border-gray-300">
                     <div className={`w-[100%] h-[100%] rounded-lg border-3 border-dashed ${!props.error ? 'border-blue-300' : 'border-red-300' }`}>
                         {props.files.length > 0 && <PdfUploadThumbnail filesURLs={fileURLs}></PdfUploadThumbnail>}
+                        {props.files.length === 0 && <div className="h-[100%] flex items-center pl-5 font-regular text-gray-300"> {props.label} </div>}
                     </div>
                 </div>
             </label>
@@ -37,9 +38,6 @@ export default function InputFile(props: InputProps) {
                 id={props.id}
                 name={props.name}
                 type="file"
-                className={`w-[100%] h-[50px] bg-white rounded-lg border-1 
-                border-gray-300 focus:border-blue-500 pl-5 outline-0 
-                font-regular  text-{14px}`}
                 onChange={handleFileChange}
                 multiple={true}
                 accept="application/pdf"

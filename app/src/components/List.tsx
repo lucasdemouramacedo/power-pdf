@@ -48,17 +48,17 @@ export default function List() {
                 {!loading && !error && files && files.length > 0 && (
                     <ul>
                         {files.map((file) => (
-                            <li key={file.id} className="text-blue-gray-500 h-[56px] mb-2 p-1 border-1 border-gray-300 bg-gray-200 grid rounded-lg grid-cols-[1fr_1fr_1fr] items-center px-9">
-                                <div className="font-normal flex items-center">
+                            <li key={file.id} className="text-blue-gray-500 p-[15px] mb-2 border-1 border-gray-300 bg-gray-200 grid rounded-lg sm:grid-cols-[1fr_1fr_1fr] grid-cols-[1fr] items-center px-9">
+                                <div className="font-normal flex items-center py-2 sm:p-0">
                                     <LuCalendarArrowUp className="mr-2" />
                                     <span className="text-sm">{new Date(file.createdAt).toLocaleDateString()} {new Date(file.createdAt).getHours()}:{new Date(file.createdAt).getUTCMinutes()}</span>
                                 </div>
-                                <div className="font-normal flex items-center">
+                                <div className="font-normal flex items-center py-2 sm:p-0">
                                     <CgFileDocument className="text-lg mr-2" />
                                     <span className="text-sm">{file.name}</span>
                                 </div>
-                                <div className="flex items-center justify-center">
-                                    <Link link={file.link} />
+                                <div className="flex items-center justify-center pt-3 border-t sm:p-0 sm:border-0">
+                                    <Link link={file.link} enableLabel="Download" disableLabel="Pendente" />
                                 </div>
                             </li>
                         ))}
