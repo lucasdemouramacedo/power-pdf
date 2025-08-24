@@ -1,0 +1,161 @@
+{
+	"info": {
+		"_postman_id": "f249a3b9-dfab-46b3-8e57-cd17798aa694",
+		"name": "Power PDF",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35184920"
+	},
+	"item": [
+		{
+			"name": "Solicitar Mesclagem",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fileName",
+							"value": "Relatório mês de Agosto",
+							"type": "text"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": []
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/merge",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"merge"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buscar Mesclagens por Data",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"startDate\": \"01-08-2025\",\r\n    \"endDate\": \"30-08-2025\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/merge?startDate=2025-08-01&endDate=2025-08-30",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"merge"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2025-08-01"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-08-30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Download de arquivo mesclado",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/merge/0ae026c9-df67-4829-b857-a46f0a505530/download",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"merge",
+						"0ae026c9-df67-4829-b857-a46f0a505530",
+						"download"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Quantidade de mesclagem por período",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "fileName",
+							"value": "Teste",
+							"type": "text"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/lucas/Downloads/TodosExames.pdf"
+						},
+						{
+							"key": "files",
+							"type": "file",
+							"src": "/C:/Users/lucas/Downloads/0070.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/report?startDate=2025-08-01&endDate=2025-08-23",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"report"
+					],
+					"query": [
+						{
+							"key": "startDate",
+							"value": "2025-08-01"
+						},
+						{
+							"key": "endDate",
+							"value": "2025-08-23"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
